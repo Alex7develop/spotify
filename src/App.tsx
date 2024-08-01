@@ -1,26 +1,32 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from 'react';
+import { loadCSVData, Song } from './utils/dataLoader';
+import { calculateSimilarityMatrix } from './utils/similarity';
+import CanvasGraph from './components/CanvasGraph';
+import styles from './App.module.css';
 
-function App() {
+const App: React.FC = () => {
+  const [songs, setSongs] = useState<Song[]>([]);
+  const [similarityMatrix, setSimilarityMatrix] = useState<number[][]>([]);
+
+  useEffect(() => {
+    async function fetchData() {
+      const data = await loadCSVData('/data/spotify_2023_2.csv');
+      setSongs(data);
+      const matrix = calculateSimilarityMatrix(data);
+      setSimilarityMatrix(matrix);
+    }
+
+    fetchData();
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className={styles.app}>
+      <h1 className={styles.title}>Spotify</h1>
+      {similarityMatrix.length > 0 && songs.length > 0 && (
+        <CanvasGraph similarityMatrix={similarityMatrix} songs={songs} />
+      )}
     </div>
   );
-}
+};
 
 export default App;
