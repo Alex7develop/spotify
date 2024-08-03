@@ -9,7 +9,7 @@ function getSongFeatures(song: Song): number[] {
     song.acousticness,
     song.instrumentalness,
     song.liveness,
-    song.speechiness
+    song.speechiness,
   ];
 }
 

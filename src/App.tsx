@@ -1,23 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import { loadCSVData, Song } from './utils/dataLoader';
-import { calculateSimilarityMatrix } from './utils/similarity';
+import React from 'react';
+import { useData } from './hooks/useData';
+import { useSimilarityMatrix } from './hooks/useSimilarityMatrix';
 import CanvasGraph from './components/CanvasGraph';
 import styles from './App.module.css';
 
 const App: React.FC = () => {
-  const [songs, setSongs] = useState<Song[]>([]);
-  const [similarityMatrix, setSimilarityMatrix] = useState<number[][]>([]);
+  const { songs, loading, error } = useData('/data/spotify_2023_2.csv');
+  const similarityMatrix = useSimilarityMatrix(songs);
 
-  useEffect(() => {
-    async function fetchData() {
-      const data = await loadCSVData('/data/spotify_2023_2.csv');
-      setSongs(data);
-      const matrix = calculateSimilarityMatrix(data);
-      setSimilarityMatrix(matrix);
-    }
-
-    fetchData();
-  }, []);
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>{error}</div>;
 
   return (
     <div className={styles.app}>

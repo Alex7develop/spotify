@@ -3,7 +3,7 @@ import Papa from 'papaparse';
 export type Song = {
   id: string;
   track_name: string;
-  artist: string;
+  'artist(s)_name': string;
   streams: number;
   bpm: number;
   key: string;
